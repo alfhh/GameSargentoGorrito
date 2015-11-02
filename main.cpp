@@ -1,11 +1,7 @@
 //
 //  main.cpp
-//  BlackJack
-//
-//  Created by Francisco Canseco on 18/09/15.
-//  Created by Alfredo Hinojosa
-//  Copyright (c) 2015 Ma. Guadalupe Roque. All rights reserved.
-//
+//  Sargento Gorrito
+//  Developed by Francisco Canseco and Alfredo Hinojosa
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -13,6 +9,7 @@
 #include <windows.h>
 #include <GL/glut.h>
 #endif
+
 #include <sstream>
 #include <stdlib.h>
 #include <math.h>
@@ -22,11 +19,13 @@
 #include <cmath>
 #include <random>
 #include <chrono>
-
 using namespace std;
 
 int pointsDealer=0;
-string mensaje="Deal?";
+
+// Strings
+string mainTitle="Sargento Gorrito";
+
 string s1="Dealer:";
 string s2="Player:";
 string s3="D-Deal H-Hit S-Stand Esc-Salir";
@@ -49,10 +48,7 @@ int rotacionTotal = 0;
 int angulo = 0;
 bool girando = false;
 
-GLsizei winWidth =1200, winHeight =800;
-
 void timer(int value){
-
 
     if(girando && angulo <= 360){
         angulo = rotacionCartas;
@@ -79,137 +75,64 @@ void init(void)
 
 }
 
-void display(){
-    //actSize();
+// Display buttons
+void paintButton(int posX, int posY){
+
+    glPushMatrix(); // Draws the border of the button
+    glTranslatef(450 + posX, 400 + posY, 0);
+    glColor3f(0,0,0);
+    glRectf(0,0,300,80);
+    glPushMatrix(); // Draws the inner part of the button
+    glColor3f(1,1,1);
+    glTranslatef(15, 4, 0);
+    glScalef(.9, .9, 1);
+    glRectf(0,0,300,80);
+    glPopMatrix();
+    glPopMatrix();
+}
+
+void display(){x
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    // Dibuja el cuadro del fondo
-    glPushMatrix();
-    glColor3f(0.82, 0.62, 0.39); // Color cafe
-    glTranslatef(550,  400, 0);
-    glRotatef(angulo + 20, 0.0, 0.0, 1.0);
-    glutSolidCube(800);
-    glPopMatrix();
-
-
-    //CARTA QUE TAPA LA PRIMERA DEL DEALER
-    if(corre){
-        glColor4f(1, 0, 0, 1);
-        float x =winWidth/20.0;
-        glRectf(x, (5.5*winHeight/7.0) - winHeight/100.0 , x+winWidth/10.0, (4.0*winHeight/7.0)+winHeight/100.0);
-    }
-
-
     glLineWidth(1.0);
     glColor3f(1,1,1);
 
-    //--------------- Despliega Mensaje
+    //--------------- Display mainTitle string
     glPushMatrix();
-    glTranslatef(winWidth/(mensaje.size()), 8.0*winHeight/9.0, 1);
-    glScaled(0.6-(mensaje.size()*.005), 0.6-(mensaje.size()*.005), 0.6);
-
-    for (int k=0;k<mensaje.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, mensaje[k]);
+    glTranslatef(1200/(mainTitle.size()), 8.0*800/9.0, 1);
+    glScaled(0.6-(mainTitle.size()*.005), 0.6-(mainTitle.size()*.005), 0.6);
+    for (int k=0;k<mainTitle.size(); k++)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, mainTitle[k]);
     glPopMatrix();
 
-    //--------------- Despliega Nombre D
-    glLineWidth(3.5);
-    glColor3f(1,0,0);
-    glPushMatrix();
-    glTranslatef(winWidth/20.0, 5.5*winHeight/7.0, 1);
-    glScaled(0.5, 0.5, 0.5);
-    for (int k=0;k<s1.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s1[k]);
-    glPopMatrix();
-    glColor3f(0,0,1);
-    //--------------- Despliega Nombre P
+    //--------------- Display buttons
+    // Paint button 1
+    paintButton(0, 60);
 
-    glPushMatrix();
-    glTranslatef(winWidth/20.0, 3.5*winHeight/7.0, 1);
-    glScaled(0.5, 0.5, 0.5);
-    for (int k=0;k<s2.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s2[k]);
-    glPopMatrix();
-    glColor3f(1,1,1);
-    //--------------- Despliega Instrucciones
-    glLineWidth(1.0);
-    glPushMatrix();
-    glTranslatef(winWidth/20.0, winHeight/6.0, 1);
-    glScaled(0.5, 0.5, 0.5);
-    for (int k=0;k<s3.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s3[k]);
-    glPopMatrix();
-    //--------------- Despliega Nombre Autor
+    // Paint button 2
+    paintButton(0, -60);
 
-    glPushMatrix();
-    glTranslatef(winWidth/40.0, winHeight/10, 1);
-    glScaled(0.3, 0.3, 0.3);
-    for (int k=0;k<s4.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s4[k]);
-    glPopMatrix();
+    // Paint button 3
+    paintButton(0, -180);
 
-    glPushMatrix();
-    glTranslatef(winWidth/40.0, winHeight/30, 1);
-    glScaled(0.3, 0.3, 0.3);
-    for (int k=0;k<sA.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, sA[k]);
-    glPopMatrix();
-
-
-    //--------------- Despliega Puntos D
-
-    if(!corre){
-        glPushMatrix();
-        glTranslatef(winWidth/1.7, 5.5*winHeight/7.0, 1);
-        glScaled(0.3, 0.3, 0.3);
-        for (int k=0;k<s5.size(); k++)
-            glutStrokeCharacter(GLUT_STROKE_ROMAN, s5[k]);
-        glPopMatrix();
-    }
-
-    //--------------- Despliega Score D
-
-    glPushMatrix();
-    glTranslatef(winWidth/1.7, 4.6*winHeight/7.0, 1);
-    glScaled(0.3, 0.3, 0.3);
-    for (int k=0;k<s7.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s7[k]);
-    glPopMatrix();
-
-
-    //--------------- Despliega Puntos P
-
-    if(!corre){
-        glPushMatrix();
-        glTranslatef(winWidth/1.7, 3.5*winHeight/7.0, 1);
-        glScaled(0.3, 0.3, 0.3);
-        for (int k=0;k<s6.size(); k++)
-            glutStrokeCharacter(GLUT_STROKE_ROMAN, s6[k]);
-        glPopMatrix();
-    }
-
-    //--------------- Despliega Score P
-
-    glPushMatrix();
-    glTranslatef(winWidth/1.7, 4.1*winHeight/7.0, 1);
-    glScaled(0.3, 0.3, 0.3);
-    for (int k=0;k<s8.size(); k++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, s8[k]);
-    glPopMatrix();
-
-      glutSwapBuffers();
+    glutSwapBuffers();
 }
 
 
 void reshape (int w, int h)
 {   glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION); // Tipo de proyecion
+    glMatrixMode(GL_PROJECTION); // Projection type
     glLoadIdentity ();
+
+    // The coordiantes of the game
+    // X goes from 0 to 1200
+    // Y goes from 0 to 800
+    // Near and far from -600 to 600
     glOrtho(0, 1200, 0, 800, -600  , 600);
 
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
     gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
+
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
@@ -242,11 +165,11 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(winWidth, winHeight); // Ajusta el ancho y alto de la ventana
-    glutInitWindowPosition(200,0); // Posicion en la que aparece la ventana en la pantalla
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH ); // Doble buffer para animacion
-    glutCreateWindow("Blackjack");
-    init(); // Inicializa todas las variables
+    glutInitWindowSize(1200, 800); // Size of the window, using globals
+    glutInitWindowPosition(200,0); // Starting point of the screen
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH ); // Doble buffer for animations
+    glutCreateWindow("Sargento Gorrito: El juego");
+    init(); // Initialize all the game variables
     glutDisplayFunc(display);
     glutTimerFunc(5, timer, 1);
     glutReshapeFunc(reshape);
