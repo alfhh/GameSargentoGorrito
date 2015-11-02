@@ -25,6 +25,7 @@ using namespace std;
 //Cosas Nuevas
 vector <Button> arrButtons;
 Object mouse(-2,-2,1,1);
+Button b(450,460,300,80,"HOLA",1);
 //Termina Cosas Nuevas
 
 int pointsDealer=0;
@@ -111,13 +112,13 @@ void display(){
     //--------------- Display buttons
     // Paint button 1
     paintButton(0, 60);
-
+    b.draw();
     // Paint button 2
     paintButton(0, -60);
 
     // Paint button 3
     paintButton(0, -180);
-
+    
     glutSwapBuffers();
 }
 

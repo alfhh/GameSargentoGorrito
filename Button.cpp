@@ -24,3 +24,28 @@ int Button::getTarget(Object o){
     }
     return -1;
 }
+
+void Button::draw(){
+    glPushMatrix();
+        glTranslated(Object::getPosX()+Object::getWidth()/2, Object::getPosY()+Object::getHeight()/2, 0);
+        glPushMatrix();
+            glRotatef(10, 1, -1, 0);
+            glScalef(.972, 1.00-((Object::getWidth()/Object::getHeight())*.028), 1.00-((Object::getWidth()/Object::getHeight())*.028));
+            glScaled(Object::getWidth(), Object::getHeight(), Object::getHeight());
+            glColor3f(0, 0, .5);
+            glutSolidCube(1);
+            glColor3f(0, 0, 1);
+            glutWireCube(1);
+            glTranslatef(0, 0, 300);
+        glPopMatrix();
+        glPushMatrix();
+            glLineWidth(3);
+            glTranslated(-Object::getWidth()/2, -Object::getHeight()/2, 1);
+            //glScalef(1/100, 1/100, 1);
+            //glScaled(Object::getWidth(), Object::getHeight(),1);
+            glColor3f(0, 0, 0);
+            for (int k=0;k<title.size(); k++)
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, title[k]);
+        glPopMatrix();
+    glPopMatrix();
+}

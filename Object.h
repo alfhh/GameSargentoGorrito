@@ -44,7 +44,6 @@ public:
     void setWidth(int w);
     void setHeight(int h);
     bool checkColision(Object o);
-    
 };
 
 #endif /* defined(__GameSargentoGorrito__Object__) */
