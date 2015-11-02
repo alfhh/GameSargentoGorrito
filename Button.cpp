@@ -19,7 +19,7 @@ void Button::setTitle(string s){
 }
 
 int Button::getTarget(Object o){
-    if (checkColision(o)){
+    if (Object::checkColision(o)){
         return target;
     }
     return -1;
