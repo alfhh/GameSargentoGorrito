@@ -19,13 +19,17 @@
 #include <cmath>
 #include <random>
 #include <chrono>
+#include "Button.h"
+#include "Object.h"
 using namespace std;
+//Cosas Nuevas
+vector <Button> arrButtons;
+Object mouse(-2,-2,1,1);
+//Termina Cosas Nuevas
 
 int pointsDealer=0;
-
 // Strings
 string mainTitle="Sargento Gorrito";
-
 string s1="Dealer:";
 string s2="Player:";
 string s3="D-Deal H-Hit S-Stand Esc-Salir";
@@ -160,6 +164,21 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
     }
 }
 
+void checkButtons(){
+    int val=-1;
+    for(Button b : arrButtons){
+        if (b.getTarget(mouse)>-1){
+            val = b.getTarget(mouse);
+            break;
+        }
+    }
+    switch (val) {
+        case -1:
+            break;
+        default:
+            break;
+    }
+}
 
 
 int main(int argc, char *argv[])
