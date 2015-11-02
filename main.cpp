@@ -91,7 +91,7 @@ void paintButton(int posX, int posY){
     glPopMatrix();
 }
 
-void display(){x
+void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glLineWidth(1.0);
     glColor3f(1,1,1);
