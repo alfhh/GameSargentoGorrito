@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1446439124 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
+1446446837 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -49,7 +49,7 @@
 	<random>
 	<chrono>
 
-1446438730 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\button.cpp
+1446439361 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\button.cpp
 	"Button.h"
 
 1446437678 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\object.cpp

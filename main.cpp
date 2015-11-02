@@ -23,61 +23,101 @@
 #include "Button.h"
 #include "Object.h"
 using namespace std;
+
+// Bitmaps
+GLubyte Heart[] = {0x00,0x00,0x00,0x00,
+    0x00,0x03,0x80,0x00,
+    0x00,0x07,0xC0,0x00,
+    0x00,0x0F,0xE0,0x00,
+    0x00,0x1F,0xF0,0x00,
+    0x00,0x3F,0xF8,0x00,
+    0x00,0x7F,0xFC,0x00,
+    0x00,0xFF,0xFE,0x00,
+    0x01,0xFF,0xFF,0x00,
+    0x03,0xFF,0xFF,0x80,
+    0x07,0xFF,0xFF,0xC0,
+    0x07,0xFF,0xFF,0xC0,
+    0x0F,0xFF,0xFF,0xE0,
+    0x0F,0xFF,0xFF,0xE0,
+    0x1F,0xFF,0xFF,0xF0,
+    0x1F,0xFF,0xFF,0xF0,
+    0x3F,0xFF,0xFF,0xF8,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x7F,0xFF,0xFF,0xFC,
+    0x3F,0xFE,0xFF,0xF8,
+    0x3F,0xFE,0xFF,0xF8,
+    0x1F,0xFC,0x7F,0xF0,
+    0x01,0x37,0xFF,0xFF,
+    0x00,0x00,0x00,0x00,};
+
 //Cosas Nuevas
 vector <Button> arrButtons;
 Object mouse(-2,-2,1,1);
 Button b(450,460,300,80,"Menu Principal",1);
 //Termina Cosas Nuevas
 
-int pointsDealer=0;
+// Timer
+char tiempo[] = {'0',':','0','0','.','0'};
+int sec = 0; // used for the timer
+
+// Player info
+int score = 0;
+
 // Strings
 string mainTitle="Sargento Gorrito";
-string s1="Dealer:";
-string s2="Player:";
-string s3="D-Deal H-Hit S-Stand Esc-Salir";
-string s4="Autor: Francisco Canseco Dominguez Matricula: A01034948";
-string sA="Autor: Alfredo Hinojosa Huerta Matricula: A01036053";
-string s5="Points Dealer = ";
-string s6="Points Player = ";
-string s7="Score Dealer = ";
-string s8="Score Player = ";
+string labelLife = "100%";
+string labelScore = "Puntuacion = 123,456";
+string labelPause = "En pausa";
+
+// Rooms
+int actualRoom;
+
+// Flags
+bool timerRunning = false;
+bool onPause = false; // If true paints pause screen
+
+// Previous stuff
 bool corre=false;
 int pointsPlayer=0;
 int sP = 0; // Score del player
 int sD = 0; // Score del dealer
-
-// VARIANBLES DE CARTAS FRANK
 int rotacionCartas = 0;
 int rotacionTotal = 0;
-
-// ANGULO PARA ROTACION FONDO
 int angulo = 0;
 bool girando = false;
 
-void timer(int value){
+void formato(int i){
+    tiempo[0]=(sec/600)+'0';
+    tiempo[2]=((sec%600)/100)+'0';
+    tiempo[3]=((sec%100)/10)+'0';
+    tiempo[5]=(sec%10)+'0';
+}
 
-    if(girando && angulo <= 360){
-        angulo = rotacionCartas;
-    } else {
-        angulo = 0;
-        girando = false;
+void myTimer(int i) {
+    if (timerRunning){
+        sec+=1;
     }
 
-    if (rotacionTotal>0){
-       rotacionCartas+=10;
-        rotacionTotal-=10;
-    }
-    else{
-        rotacionCartas=0;
-    }
+    glutTimerFunc(100,myTimer,i);
+    formato(sec);
     glutPostRedisplay();
-    glutTimerFunc(10, timer, 1);
+
 }
 
 void init(void)
 {
     corre=false;
     glClearColor(0,.47,0,1); // Background color
+    arrButtons.push_back(b); // Button added to the array
+    actualRoom = 1; // Default value 0 = mainMenu
     //glEnable(GL_DEPTH_TEST);
 }
 
@@ -97,9 +137,9 @@ void paintButton(int posX, int posY){
     glPopMatrix();
 }
 
-void display(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glLineWidth(1.0);
+// MAIN MENU
+void room0() {
+    glClearColor(0,.47,0,1); // Background color
     glColor3f(1,1,1);
 
     //--------------- Display mainTitle string
@@ -119,6 +159,87 @@ void display(){
 
     // Paint button 3
     paintButton(0, -180);
+
+}
+
+// FIRST LEVEL
+void room1() {
+    glClearColor(1,1,1,1); // Background color
+
+    score = 0; // Reset the score of the player
+
+    // Navbar
+    glColor3f(0,0,0);
+    glRectf(0, 730, 1200, 800); // Draws the black navbar
+    glColor3f(1,0,0); // Color red
+    glRasterPos2d(20, 750); // Position of the heart
+    glBitmap(32, 32, 0,0, 10, 0, Heart); // Draws the heart
+
+    glPushMatrix(); // --------------------Matrix used to have all inside the navbar
+    glTranslatef(60, 750, 0);
+
+    glPushMatrix(); // Displays the timer
+    glTranslatef(1000, 0, 0);
+    glColor3f(1,1,1); // Color white
+    glScaled(.3, .3, .3);
+    for (int k=0;k<6; k++)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, tiempo[k]);
+    glPopMatrix();
+
+    glPushMatrix(); // Displays the score
+    glTranslatef(350, 0, 0);
+    glColor3f(1,1,1); // Color white
+    glScaled(.3, .3, .3);
+    for (int k=0;k<labelScore.size(); k++)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, labelScore[k]);
+    glPopMatrix();
+
+    glPushMatrix(); // Diplay percentage of the player's life
+    glColor3f(1,1,1); // Color white
+    glScaled(.3, .3, .3);
+    for (int k=0;k<labelLife.size(); k++)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, labelLife[k]);
+    glPopMatrix();
+
+    glPopMatrix(); // -------------------------------------------------------- NAVBAR
+
+    if(onPause) { // Display the pause window
+
+        glColor3f(.92, .92, .92); // Color gray
+        glPushMatrix();
+        glTranslatef(600, 400, 0);
+        glutSolidCube(500); // Background of the panel
+
+        glPushMatrix(); // Pause label
+        glTranslatef(-90, 180, 0);
+        glColor3f(0,0,0); // Color black
+        glScaled(.3, .3, .3);
+        for (int k=0;k<labelPause.size(); k++)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, labelPause[k]);
+        glPopMatrix();
+
+        glPopMatrix();
+    }
+
+    glFlush();
+
+}
+
+void display(){
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glLineWidth(1.0);
+
+    switch (actualRoom) {
+        case 0: // Paints the main menu
+            room0();
+            break;
+        case 1: // Paints the first level
+            room1();
+            break;
+        default:
+            break;
+    }
 
     glutSwapBuffers();
 }
@@ -182,27 +303,57 @@ void myMouse(int button, int state, int x, int y)
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
-{    switch (theKey)
-    {
-        case 'd':
-        case 'D':
-            rotacionTotal = 360;
-            girando = true;
-            break;
-        case 'h':
-        case 'H':
-            rotacionTotal = 360;
-            girando = true;
-            break;
-        case 's':
-        case 'S':
-            rotacionTotal = 360;
-            girando = true;
-            break;
-        case 27:
-            exit(-1); //terminate the program
-        default:
-            break; // do nothing
+{
+    if(actualRoom == 0){
+            switch (theKey) {
+            case 'j':
+                actualRoom = 1;
+                break;
+            case 'k':
+                actualRoom = 0;
+                break;
+            case 'd':
+            case 'D':
+                rotacionTotal = 360;
+                girando = true;
+                break;
+            case 'h':
+            case 'H':
+                rotacionTotal = 360;
+                girando = true;
+                break;
+            case 's':
+            case 'S':
+                rotacionTotal = 360;
+                girando = true;
+                break;
+            case 27:
+                exit(-1); //terminate the program
+            default:
+                break; // do nothing
+        }
+    } else if(actualRoom == 1){
+        switch (theKey) {
+            case 's':
+            case 'S':
+                timerRunning = true; // Start the timer
+                break;
+            case 'p':
+            case 'P':
+                onPause = !onPause;
+                timerRunning = !timerRunning;
+                break;
+            case 'j':
+                actualRoom = 1;
+                break;
+            case 'k':
+                actualRoom = 0;
+                break;
+            case 27:
+                exit(-1); //terminate the program
+            default:
+                break; // do nothing
+        }
     }
 }
 
@@ -216,7 +367,7 @@ int main(int argc, char *argv[])
     glutCreateWindow("Sargento Gorrito: El juego");
     init(); // Initialize all the game variables
     glutDisplayFunc(display);
-    glutTimerFunc(5, timer, 1);
+    glutTimerFunc(0, myTimer, 0);
     glutReshapeFunc(reshape);
     glutMouseFunc(myMouse);
     glutKeyboardFunc(myKeyboard);
