@@ -19,6 +19,7 @@
 #include <cmath>
 #include <random>
 #include <chrono>
+
 #include "Button.h"
 #include "Object.h"
 using namespace std;
@@ -76,8 +77,8 @@ void timer(int value){
 void init(void)
 {
     corre=false;
-    glClearColor(0,.47,0,1); // Color de la ventada, el fondo naranja
-
+    glClearColor(0,.47,0,1); // Background color
+    //glEnable(GL_DEPTH_TEST);
 }
 
 // Display buttons
@@ -140,6 +141,15 @@ void reshape (int w, int h)
 
 }
 
+void myMouse(int button, int state, int x, int y)
+{
+    if (state == GLUT_DOWN){
+
+    } else if (state == GLUT_UP){
+
+    }
+}
+
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
 {    switch (theKey)
     {
@@ -176,6 +186,9 @@ void checkButtons(){
     switch (val) {
         case -1:
             break;
+        case 1:
+            cout << "Play game!!" << endl;
+            break;
         default:
             break;
     }
@@ -193,6 +206,7 @@ int main(int argc, char *argv[])
     glutDisplayFunc(display);
     glutTimerFunc(5, timer, 1);
     glutReshapeFunc(reshape);
+    glutMouseFunc(myMouse);
     glutKeyboardFunc(myKeyboard);
     glutMainLoop();
     glutPostRedisplay();

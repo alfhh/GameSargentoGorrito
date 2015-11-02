@@ -1,5 +1,41 @@
 # depslib dependency file v1.0
-1446429165 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
+1446431872 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+	"Button.h"
+	"Object.h"
+
+1439412762 c:\program files (x86)\glut\include\gl\glut.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1446429968 c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\button.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	"Object.h"
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1446429968 c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\object.h
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -13,8 +49,9 @@
 	<random>
 	<chrono>
 
-1439412762 c:\program files (x86)\glut\include\gl\glut.h
-	<windows.h>
-	<GL/gl.h>
-	<GL/glu.h>
+1446429968 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\button.cpp
+	"Button.h"
+
+1446429968 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\object.cpp
+	"Object.h"
 
