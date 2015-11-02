@@ -19,7 +19,6 @@
 #include <cmath>
 #include <random>
 #include <chrono>
-
 #include "Button.h"
 #include "Object.h"
 using namespace std;
@@ -77,8 +76,8 @@ void timer(int value){
 void init(void)
 {
     corre=false;
-    glClearColor(0,.47,0,1); // Background color
-    //glEnable(GL_DEPTH_TEST);
+    glClearColor(0,.47,0,1); // Color de la ventada, el fondo naranja
+
 }
 
 // Display buttons
@@ -119,7 +118,7 @@ void display(){
 
     // Paint button 3
     paintButton(0, -180);
-    
+
     glutSwapBuffers();
 }
 
@@ -139,15 +138,6 @@ void reshape (int w, int h)
     glLoadIdentity ();
     gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
 
-}
-
-void myMouse(int button, int state, int x, int y)
-{
-    if (state == GLUT_DOWN){
-
-    } else if (state == GLUT_UP){
-
-    }
 }
 
 void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
@@ -187,13 +177,30 @@ void checkButtons(){
         case -1:
             break;
         case 1:
-            cout << "Play game!!" << endl;
+            cout << "WORKED" << endl;
             break;
         default:
             break;
     }
 }
 
+void myMouse(int button, int state, int x, int y)
+{
+    // Fix of y
+    y -= 800;
+
+    if (state == GLUT_DOWN){
+
+    }
+    else
+        if (state == GLUT_UP) // Check if button is clicked
+        {
+            mouse.setPosX(x);
+            mouse.setPosY(y);
+            cout << "The position of the mouse X: " << mouse.getPosX() <<" and Y: " << mouse.getPosY() << endl;
+            checkButtons();
+        }
+}
 
 int main(int argc, char *argv[])
 {
@@ -206,10 +213,9 @@ int main(int argc, char *argv[])
     glutDisplayFunc(display);
     glutTimerFunc(5, timer, 1);
     glutReshapeFunc(reshape);
-    glutMouseFunc(myMouse);
     glutKeyboardFunc(myKeyboard);
+    glutMouseFunc(myMouse);
     glutMainLoop();
     glutPostRedisplay();
     return EXIT_SUCCESS;
 }
-
