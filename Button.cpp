@@ -27,7 +27,7 @@ int Button::getTarget(Object o){
 
 void Button::draw(){
     int strW=Object::getWidth()*.8;
-    
+
     glPushMatrix();
         glTranslated(Object::getPosX()+Object::getWidth()/2, Object::getPosY()+Object::getHeight()/2, 0);
         glPushMatrix();
