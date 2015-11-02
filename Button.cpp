@@ -26,13 +26,15 @@ int Button::getTarget(Object o){
 }
 
 void Button::draw(){
+    int strW=Object::getWidth()*.8;
+    
     glPushMatrix();
         glTranslated(Object::getPosX()+Object::getWidth()/2, Object::getPosY()+Object::getHeight()/2, 0);
         glPushMatrix();
             glRotatef(10, 1, -1, 0);
             glScalef(.972, 1.00-((Object::getWidth()/Object::getHeight())*.028), 1.00-((Object::getWidth()/Object::getHeight())*.028));
             glScaled(Object::getWidth(), Object::getHeight(), Object::getHeight());
-            glColor3f(0, 0, .5);
+            glColor3f(0, .3, .6);
             glutSolidCube(1);
             glColor3f(0, 0, 1);
             glutWireCube(1);
@@ -40,9 +42,9 @@ void Button::draw(){
         glPopMatrix();
         glPushMatrix();
             glLineWidth(3);
-            glTranslated(-Object::getWidth()/2, -Object::getHeight()/2, 1);
-            //glScalef(1/100, 1/100, 1);
-            //glScaled(Object::getWidth(), Object::getHeight(),1);
+            glTranslated(-Object::getWidth()/2.4, -Object::getHeight()/3, 1);
+            glScalef((1.0/80.0)*(Object::getWidth()/title.size()),(1.0/80.0)*Object::getHeight()*.5,0);
+            //glScaled(Object::getWidth(), Object::getHeight(),0);
             glColor3f(0, 0, 0);
             for (int k=0;k<title.size(); k++)
                 glutStrokeCharacter(GLUT_STROKE_ROMAN, title[k]);
