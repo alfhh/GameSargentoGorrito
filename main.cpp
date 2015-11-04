@@ -162,6 +162,13 @@ void room0() {
 
 }
 
+// HEALTH MANUAL
+void manual(){
+    glClearColor(.99,.93,.75,1); // Background color
+    glColor3f(1,1,1);
+    glFlush();
+}
+
 // FIRST LEVEL
 void room1() {
     glClearColor(1,1,1,1); // Background color
@@ -236,6 +243,9 @@ void display(){
             break;
         case 1: // Paints the first level
             room1();
+            break;
+        case 9:
+            manual();
             break;
         default:
             break;
@@ -312,21 +322,6 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
             case 'k':
                 actualRoom = 0;
                 break;
-            case 'd':
-            case 'D':
-                rotacionTotal = 360;
-                girando = true;
-                break;
-            case 'h':
-            case 'H':
-                rotacionTotal = 360;
-                girando = true;
-                break;
-            case 's':
-            case 'S':
-                rotacionTotal = 360;
-                girando = true;
-                break;
             case 27:
                 exit(-1); //terminate the program
             default:
@@ -334,6 +329,11 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
         }
     } else if(actualRoom == 1){
         switch (theKey) {
+            case 'm':
+            case 'M':
+                timerRunning = false;
+                actualRoom = 9;
+                break;
             case 's':
             case 'S':
                 timerRunning = true; // Start the timer
@@ -351,6 +351,15 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
                 break;
             case 27:
                 exit(-1); //terminate the program
+            default:
+                break; // do nothing
+        }
+    } else if(actualRoom == 9){
+        switch (theKey) {
+            case 27:
+                actualRoom = 1;
+                timerRunning = true;
+                break;
             default:
                 break; // do nothing
         }
