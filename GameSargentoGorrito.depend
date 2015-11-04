@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1446446837 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
+1446447602 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
