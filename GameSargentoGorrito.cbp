@@ -46,6 +46,8 @@
 		<Unit filename="Button.h" />
 		<Unit filename="Object.cpp" />
 		<Unit filename="Object.h" />
+		<Unit filename="imageloader.cpp" />
+		<Unit filename="imageloader.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

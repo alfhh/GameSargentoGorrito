@@ -22,6 +22,7 @@
 
 #include "Button.h"
 #include "Object.h"
+#include "imageloader.h" // Used to load textures
 using namespace std;
 
 // Bitmaps
@@ -77,6 +78,9 @@ string labelLife = "100%";
 string labelScore = "Puntuacion = 123,456";
 string labelPause = "En pausa";
 
+// Textures
+GLuint _textureId; //The id of the texture
+
 // Rooms
 int actualRoom;
 
@@ -112,12 +116,33 @@ void myTimer(int i) {
 
 }
 
+//Makes the image into a texture, and returns the id of the texture
+GLuint loadTexture(Image* image) {
+	GLuint textureId;
+	glGenTextures(1, &textureId); //Make room for our texture
+	glBindTexture(GL_TEXTURE_2D, textureId); //Tell OpenGL which texture to edit
+	//Map the image to the texture
+	glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
+				 0,                            //0 for now
+				 GL_RGB,                       //Format OpenGL uses for image
+				 image->width, image->height,  //Width and height
+				 0,                            //The border of the image
+				 GL_RGB, //GL_RGB, because pixels are stored in RGB format
+				 GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
+				                   //as unsigned numbers
+				 image->pixels);               //The actual pixel data
+	return textureId; //Returns the id of the texture
+}
+
 void init(void)
 {
     corre=false;
     glClearColor(0,.47,0,1); // Background color
     arrButtons.push_back(b); // Button added to the array
-    actualRoom = 1; // Default value 0 = mainMenu
+    actualRoom = 0; // Default value 0 = mainMenu
+    //Image* image = loadBMP("C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\img\\camo.bmp");
+	//_textureId = loadTexture(image);
+	//delete image;
     //glEnable(GL_DEPTH_TEST);
 }
 
@@ -139,6 +164,10 @@ void paintButton(int posX, int posY){
 
 // MAIN MENU
 void room0() {
+    // TODO REFACTOR THIS
+    // TEXTURE RENDERING
+
+
     glClearColor(0,.47,0,1); // Background color
     glColor3f(1,1,1);
 
@@ -172,7 +201,6 @@ void manual(){
 // FIRST LEVEL
 void room1() {
     glClearColor(1,1,1,1); // Background color
-
     score = 0; // Reset the score of the player
 
     // Navbar
@@ -228,7 +256,7 @@ void room1() {
         glPopMatrix();
     }
 
-    glFlush();
+    //glFlush();
 
 }
 
@@ -358,7 +386,8 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
         switch (theKey) {
             case 27:
                 actualRoom = 1;
-                timerRunning = true;
+                timerRunning = false;
+                onPause = true;
                 break;
             default:
                 break; // do nothing

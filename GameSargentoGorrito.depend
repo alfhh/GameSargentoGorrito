@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1446629485 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
+1446701899 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -14,6 +14,7 @@
 	<chrono>
 	"Button.h"
 	"Object.h"
+	"imageloader.h"
 
 1439412762 c:\program files (x86)\glut\include\gl\glut.h
 	<windows.h>
@@ -53,5 +54,66 @@
 	"Button.h"
 
 1446437678 source:c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\object.cpp
+	"Object.h"
+
+1219431990 c:\users\ferra_000\onedrive\itesm\7 semestre\gráficas computacionales\gamesargentogorrito\imageloader.h
+
+1446439361 source:c:\users\ferra_000\desktop\gamesargentogorrito\button.cpp
+	"Button.h"
+
+1446429968 c:\users\ferra_000\desktop\gamesargentogorrito\button.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	"Object.h"
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1446437678 c:\users\ferra_000\desktop\gamesargentogorrito\object.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1219431990 source:c:\users\ferra_000\desktop\gamesargentogorrito\imageloader.cpp
+	<assert.h>
+	<fstream>
+	"imageloader.h"
+
+1219431990 c:\users\ferra_000\desktop\gamesargentogorrito\imageloader.h
+
+1446702910 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+	"Button.h"
+	"Object.h"
+	"imageloader.h"
+
+1446437678 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp
 	"Object.h"
 
