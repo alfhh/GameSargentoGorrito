@@ -97,7 +97,7 @@
 
 1219431990 c:\users\ferra_000\desktop\gamesargentogorrito\imageloader.h
 
-1446702910 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
+1447616715 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -114,6 +114,6 @@
 	"Object.h"
 	"imageloader.h"
 
-1446437678 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp
+1447611647 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp
 	"Object.h"
 

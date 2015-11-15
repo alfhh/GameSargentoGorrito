@@ -59,17 +59,28 @@ GLubyte Heart[] = {0x00,0x00,0x00,0x00,
     0x01,0x37,0xFF,0xFF,
     0x00,0x00,0x00,0x00,};
 
-//Cosas Nuevas
+//-----------------------------------Bottones
 vector <Button> arrButtons;
 Object mouse(-2,-2,1,1);
+
+// Buttons of room 0 = Menu
 Button b(450,460,300,80,"Menu Principal",1);
+Button b2(450, 320, 300, 80, "Opciones", 2);
+Button b3(450, 180, 300, 80, "Cargar", 3);
+
+// Buttons of room 1 = Game room
+Button bEsc(450, 420, 300, 80, "Salir del juego", 0);
+Button bEnc(450, 280, 300, 80, "La Enciclopedia", 9);
+
+//-----------------------------------Bottones
+
 //Termina Cosas Nuevas
 
 // Timer
 char tiempo[] = {'0',':','0','0','.','0'};
 int sec = 0; // used for the timer
 
-// Player info
+// Game info
 int score = 0;
 
 // Strings
@@ -80,6 +91,11 @@ string labelPause = "En pausa";
 
 // Textures
 GLuint _textureId; //The id of the texture
+
+// Player
+int playerxcor;
+int playerycor;
+int playerSpeed = 10;
 
 // Rooms
 int actualRoom;
@@ -134,32 +150,59 @@ GLuint loadTexture(Image* image) {
 	return textureId; //Returns the id of the texture
 }
 
+void materialRuby(){
+    //Asigna los apropiados materiales a las superficies
+    GLfloat mat_ambient[] = {0.25, 0.20725, 0.20725, 1.0f}; //gris
+    GLfloat mat_diffuse[] = {1, 0.829, 0.829, 1.0f};
+    GLfloat mat_specular[] = {0.296648, 0.296648, 0.296648, 1.0f};
+    GLfloat mat_shininess[]= {50.0f};
+   // glEnable(GL)
+    glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
+    glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
+    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+}
+
+void materialOriginal(){
+
+    //Asigna los apropiados materiales a las superficies
+    GLfloat mat_ambient[] = {0.7f, 0.7f, 0.7f, 1.0f}; //gris
+    GLfloat mat_diffuse[] = {0.6f, 0.6f, 0.6f, 1.0f};
+    GLfloat mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat mat_shininess[]= {50.0f};
+    glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
+    glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
+    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+
+}
+
 void init(void)
 {
     corre=false;
     glClearColor(0,.47,0,1); // Background color
     arrButtons.push_back(b); // Button added to the array
     actualRoom = 0; // Default value 0 = mainMenu
-    //Image* image = loadBMP("C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\img\\camo.bmp");
-	//_textureId = loadTexture(image);
-	//delete image;
-    //glEnable(GL_DEPTH_TEST);
-}
 
-// Display buttons
-void paintButton(int posX, int posY){
+    // Player initial values
+    playerxcor = 540;
+    playerycor = 320;
 
-    glPushMatrix(); // Draws the border of the button
-    glTranslatef(450 + posX, 400 + posY, 0);
-    glColor3f(0,0,0);
-    glRectf(0,0,300,80);
-    glPushMatrix(); // Draws the inner part of the button
-    glColor3f(1,1,1);
-    glTranslatef(15, 4, 0);
-    glScalef(.9, .9, 1);
-    glRectf(0,0,300,80);
-    glPopMatrix();
-    glPopMatrix();
+    glEnable(GL_DEPTH);
+
+    ///*
+    //Material stuff
+//glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
+    //glShadeModel(GL_SMOOTH);
+    //glEnable(GL_DEPTH_TEST); //para eliminar las caras ocultas
+    //glEnable(GL_NORMALIZE); //normaliza el vector para ombrear apropiadamente
+    // asigna la apropiada fuente de luz
+    //GLfloat lightIntensity[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    //GLfloat light_position[] = {0.0f, 0.0f, 0.0f, 0.0f};
+    //glLightfv(GL_LIGHT0, GL_POSITION,light_position);
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE,lightIntensity);
+    //*/
 }
 
 // MAIN MENU
@@ -180,14 +223,11 @@ void room0() {
     glPopMatrix();
 
     //--------------- Display buttons
-    // Paint button 1
-    paintButton(0, 60);
-    b.draw();
-    // Paint button 2
-    paintButton(0, -60);
+    b.draw(); // Button1
+    b2.draw(); // Button 2
+    b3.draw(); // Button 3
 
-    // Paint button 3
-    paintButton(0, -180);
+
 
 }
 
@@ -195,14 +235,28 @@ void room0() {
 void manual(){
     glClearColor(.99,.93,.75,1); // Background color
     glColor3f(1,1,1);
+
+    glPushMatrix();
+    glTranslatef(600, 400, 0);
+    glutSolidCube(500);
+    glPopMatrix();
+
     glFlush();
+}
+
+// Draw the player
+void drawPlayer(){
+    glColor3f(1, 0,0);
+    //materialRuby();
+    glRectf(0, 0, 60, 80);
+    //materialOriginal();
 }
 
 // FIRST LEVEL
 void room1() {
     glClearColor(1,1,1,1); // Background color
     score = 0; // Reset the score of the player
-
+    //glDisable(GL_LIGHTING);
     // Navbar
     glColor3f(0,0,0);
     glRectf(0, 730, 1200, 800); // Draws the black navbar
@@ -230,13 +284,20 @@ void room1() {
     glPopMatrix();
 
     glPushMatrix(); // Diplay percentage of the player's life
-    glColor3f(1,1,1); // Color white
+    glColor3f(0,0,1); // Color white
     glScaled(.3, .3, .3);
     for (int k=0;k<labelLife.size(); k++)
         glutStrokeCharacter(GLUT_STROKE_ROMAN, labelLife[k]);
     glPopMatrix();
 
     glPopMatrix(); // -------------------------------------------------------- NAVBAR
+
+    // ----------------------------- Player
+    glPushMatrix();
+    glTranslatef(playerxcor, playerycor, 0);
+    drawPlayer();
+    glPopMatrix();
+    //------------------------------ Player
 
     if(onPause) { // Display the pause window
 
@@ -252,12 +313,10 @@ void room1() {
         for (int k=0;k<labelPause.size(); k++)
         glutStrokeCharacter(GLUT_STROKE_ROMAN, labelPause[k]);
         glPopMatrix();
-
         glPopMatrix();
+        bEsc.draw();
+        bEnc.draw();
     }
-
-    //glFlush();
-
 }
 
 void display(){
@@ -303,17 +362,58 @@ void reshape (int w, int h)
 void checkButtons(){
     int val=-1;
     for(Button b : arrButtons){
-        if (b.getTarget(mouse) > -1){
-            val = b.getTarget(mouse);
-            cout << "entro" << endl;
-            break;
+        if(actualRoom == 0){
+                if (b.getTarget(mouse) > -1){
+                val = b.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            } else if (b2.getTarget(mouse) > -1){
+                val = b2.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            } else if (b3.getTarget(mouse) > -1){
+                val = b3.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            }
+        } else if(actualRoom == 1){
+            if ((bEsc.getTarget(mouse) > -1) && onPause){
+                val = bEsc.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            } else if ((bEnc.getTarget(mouse) > -1) && onPause){
+                val = bEnc.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            }
         }
     }
+
     switch (val) {
         case -1:
             break;
+        case 0:
+            cout << "Go to room 0" << endl;
+            timerRunning = false;
+            onPause = false;
+            actualRoom = 0;
+            break;
         case 1:
-            cout << "WORKED" << endl;
+            cout << "Go to room 1" << endl;
+            actualRoom = 1;
+            timerRunning = true;
+            sec = 0;
+            break;
+        case 2:
+            cout << "Go to room Opciones" << endl;
+            break;
+        case 3:
+            cout << "Go to room Cargar" << endl;
+            break;
+        case 9:
+            cout << "Go to room Enciclopedia";
+            timerRunning = false;
+            actualRoom = 9;
             break;
         default:
             break;
@@ -325,6 +425,8 @@ void myMouse(int button, int state, int x, int y)
     // Fix of y
     y = (y * 800) / glutGet(GLUT_WINDOW_HEIGHT);
     y = 800 - y;
+    x = (x * 1200) / glutGet(GLUT_WINDOW_WIDTH);
+    x = 1200 - x;
 
     if (state == GLUT_DOWN){
 
@@ -340,49 +442,51 @@ void myMouse(int button, int state, int x, int y)
         }
 }
 
-void myKeyboard(unsigned char theKey, int mouseX, int mouseY)
+void myKeyboard(unsigned char theKey, int x, int y)
 {
-    if(actualRoom == 0){
+    y = (y * 800) / glutGet(GLUT_WINDOW_HEIGHT);
+    y = 800 - y;
+    if(actualRoom == 0){ // Main menu
             switch (theKey) {
-            case 'j':
-                actualRoom = 1;
-                break;
-            case 'k':
-                actualRoom = 0;
-                break;
             case 27:
                 exit(-1); //terminate the program
             default:
                 break; // do nothing
         }
-    } else if(actualRoom == 1){
+    } else if(actualRoom == 1){ // Game room
         switch (theKey) {
-            case 'm':
-            case 'M':
-                timerRunning = false;
-                actualRoom = 9;
+            case 'w':
+            case 'W': // Movement upward
+                if(playerycor < 650){
+                    playerycor+= playerSpeed;
+                }
                 break;
             case 's':
-            case 'S':
-                timerRunning = true; // Start the timer
+            case 'S': // Movement downward
+                if(playerycor > 0){
+                    playerycor-= playerSpeed;
+                }
                 break;
-            case 'p':
-            case 'P':
+            case 'a':
+            case 'A': // Go left
+                if(playerxcor > 0){
+                    playerxcor-= playerSpeed;
+                }
+                break;
+            case 'd':
+            case 'D': // Go right
+                if(playerxcor < 1140){
+                    playerxcor+= playerSpeed;
+                }
+                break;
+            case 27: // Pause game
                 onPause = !onPause;
                 timerRunning = !timerRunning;
                 break;
-            case 'j':
-                actualRoom = 1;
-                break;
-            case 'k':
-                actualRoom = 0;
-                break;
-            case 27:
-                exit(-1); //terminate the program
             default:
                 break; // do nothing
         }
-    } else if(actualRoom == 9){
+    } else if(actualRoom == 9){ // Enciclopedia room
         switch (theKey) {
             case 27:
                 actualRoom = 1;

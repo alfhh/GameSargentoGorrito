@@ -47,8 +47,8 @@ void Object::setHeight(int h){
 }
 
 bool Object::checkColision(Object o){
-    if (o.getPosX()+o.getWidth()>posX||posX+width>o.getPosX()){
-        if (o.getPosY()+o.getHeight()>posY||posY+o.getHeight()>o.getPosY()){
+    if((o.getPosX()+o.getWidth()>posX&&o.getPosX()+o.getWidth()<posX+width)||(o.getPosX()>posX&&o.getPosX()<posX+width)){
+        if((o.getPosY()+o.getHeight()>posY&&o.getPosY()+o.getHeight()<posY+height)||(o.getPosY()>posY&&o.getPosY()<posY+height)){
             return true;
         }
     }
