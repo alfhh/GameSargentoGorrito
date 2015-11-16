@@ -76,6 +76,9 @@ Button b3(450, 180, 300, 80, "Cargar", 3);
 Button bEsc(450, 420, 300, 80, "Salir del juego", 0);
 Button bEnc(450, 280, 300, 80, "Laboratorio", 9);
 
+Button bNext(1000, 480, 150, 80, "--> ", 10);
+Button bPrev(1000, 350, 150, 80, "<-- ", 11);
+
 //-----------------------------------Bottones
 
 // -------------------------------------- FRANKS
@@ -89,7 +92,7 @@ int rotacionTotal = 0;
 // -------------------------------------- FRANKS
 int shoot=0;
 // - Textures
-static GLuint texName[10];
+static GLuint texName[22]; // TODO UPDATE THIS
 
 // Timer
 char tiempo[] = {'0',':','0','0','.','0'};
@@ -248,7 +251,7 @@ void init(void)
     glLightfv(GL_LIGHT0, GL_POSITION, directedLightPos);
 //    glEnable(GL_DEPTH_TEST);
 
-    glGenTextures(5, texName); //Make room for our texture
+    glGenTextures(12, texName); //Make room for our texture
 
     //Cargar todas las texturas
     loadImage("camogreen.bmp",i++);
@@ -257,6 +260,16 @@ void init(void)
     loadImage("quad.bmp",i++);
     loadImage("thelab.bmp",i++);
     loadImage("glass.bmp",i++);
+    loadImage("textOne.bmp",i++);
+
+    // --- Enfermedades
+
+    loadImage("sida1.bmp",i++); //7
+    loadImage("sida2.bmp",i++); //8
+    loadImage("sida3.bmp",i++); //9
+    loadImage("vph1.bmp",i++); //10
+    loadImage("vph2.bmp",i++); //11
+    loadImage("vph3.bmp",i++); // 12
     //---------------------------------------------- Textures
 }
 
@@ -340,24 +353,103 @@ void manual(){
     glBindTexture(GL_TEXTURE_2D, texName[5]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(-250.0f, -250.0f, 0);
+    glVertex3f(-550.0f, -300.0f, 0);
 
     glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(250.0f, -250.0f, 0);
+    glVertex3f(300.0f, -300.0f, 0);
 
     glTexCoord2f(1.0f,1.0f);
-    glVertex3f(250.0f, 250.0f, 0);
+    glVertex3f(300.0f, 300.0f, 0);
 
     glTexCoord2f(0.0f, 1.0f);
-    glVertex3f(-250.0f, 250.0f, 0);
+    glVertex3f(-550.0f, 300.0f, 0);
     glEnd();
-
-    // ---------------------------- TEXTURES
-
-    glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
+
+    // ---------------------------- TEXTURES
+
+    glPushMatrix();
+    glTranslatef(-120, 0, 0);
+
+    glColor3f(1,1,1);
+
+    glPushMatrix(); // -------------- DISPLAY IMAGE
+    glTranslatef(0,150,0);
+    glutSolidCube(180);
+    glPopMatrix();
+
+    // ------------------------ INFO
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+
+    glPushMatrix();
+    glTranslatef(-250, -100, 0);
+    glBindTexture(GL_TEXTURE_2D, texName[10]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(128.0f, 128.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-128.0f, 128.0f, 0);
+    glEnd();
+    glPopMatrix(); // ------------------------- TEXT1
+
+    glPushMatrix();
+    glTranslatef(0, -100, 0);
+    glBindTexture(GL_TEXTURE_2D, texName[11]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(128.0f, 128.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-128.0f, 128.0f, 0);
+    glEnd();
+    glPopMatrix(); // ------------------------- TEXT2
+
+    glPushMatrix();
+    glTranslatef(250, -100, 0);
+    glBindTexture(GL_TEXTURE_2D, texName[12]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(128.0f, -128.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(128.0f, 128.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-128.0f, 128.0f, 0);
+    glEnd();
+    glPopMatrix(); // ------------------------- TEXT3
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+
+    // ------------------------ INFO
+
+    glPopMatrix();
+    glPopMatrix();
+
+    bNext.draw();
+    bPrev.draw();
+
     // ---------------------------- TEXTURES
 }
 
@@ -570,6 +662,16 @@ void checkButtons(){
                 cout << "entro" << endl;
                 break;
             }
+        } else if(actualRoom == 9){
+            if ((bPrev.getTarget(mouse) > -1) && onPause){
+                val = bPrev.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            } else if ((bNext.getTarget(mouse) > -1) && onPause){
+                val = bNext.getTarget(mouse);
+                cout << "entro" << endl;
+                break;
+            }
         }
     }
 
@@ -599,6 +701,12 @@ void checkButtons(){
             timerRunning = false;
             actualRoom = 9;
             break;
+        case 10:
+            cout << "Go Prev";
+            break;
+        case 11:
+            cout << "Go Next";
+            break;
         default:
             break;
     }
@@ -610,7 +718,6 @@ void myMouse(int button, int state, int x, int y)
     y = (y * 800) / glutGet(GLUT_WINDOW_HEIGHT);
     y = 800 - y;
     x = (x * 1200) / glutGet(GLUT_WINDOW_WIDTH);
-    x = 1200 - x;
 
     if (state == GLUT_DOWN){
 
