@@ -28,7 +28,6 @@
 #include "Sargent.h"
 #include "imageloader.h" // Used to load textures
 using namespace std;
-
 // Bitmaps
 GLubyte Heart[] = {0x00,0x00,0x00,0x00,
     0x00,0x03,0x80,0x00,
@@ -216,7 +215,9 @@ void myTimer(int i) {
     for (int i = 0 ; i < arrSperm.size();i++){
         if (s.checkColision(arrSperm[i])){
             s.changeHealth(-arrSperm[i].getDamage());
+            s.setHealthA(10);
             arrSperm.erase(arrSperm.begin()+i);
+            cout << s.getHealth()<<endl;
         }
     }
     for (int i = 0 ; i < arrBullets.size();i++){
@@ -397,7 +398,6 @@ void init(void)
 
 // MAIN MENU
 void room0() {
-
     glClearColor(0,.47,0,1); // Background color
     glColor3f(1,1,1);
 
