@@ -79,6 +79,8 @@ Button bEnc(450, 280, 300, 80, "Laboratorio", 9);
 Button bNext(1000, 480, 150, 80, "--> ", 10);
 Button bPrev(1000, 350, 150, 80, "<-- ", 11);
 
+int virusIndex = 0;
+
 //-----------------------------------Bottones
 
 // -------------------------------------- FRANKS
@@ -251,7 +253,7 @@ void init(void)
     glLightfv(GL_LIGHT0, GL_POSITION, directedLightPos);
 //    glEnable(GL_DEPTH_TEST);
 
-    glGenTextures(12, texName); //Make room for our texture
+    glGenTextures(18, texName); //Make room for our texture
 
     //Cargar todas las texturas
     loadImage("camogreen.bmp",i++);
@@ -270,6 +272,13 @@ void init(void)
     loadImage("vph1.bmp",i++); //10
     loadImage("vph2.bmp",i++); //11
     loadImage("vph3.bmp",i++); // 12
+    loadImage("gon1.bmp",i++); // 13
+    loadImage("gon2.bmp",i++); // 14
+    loadImage("gon3.bmp",i++); // 15
+    loadImage("her1.bmp",i++); // 16
+    loadImage("her2.bmp",i++); // 17
+    loadImage("her3.bmp",i++); // 18
+
     //---------------------------------------------- Textures
 }
 
@@ -387,7 +396,7 @@ void manual(){
 
     glPushMatrix();
     glTranslatef(-250, -100, 0);
-    glBindTexture(GL_TEXTURE_2D, texName[10]);
+    glBindTexture(GL_TEXTURE_2D, texName[ 7 + virusIndex]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-128.0f, -128.0f, 0);
@@ -405,7 +414,7 @@ void manual(){
 
     glPushMatrix();
     glTranslatef(0, -100, 0);
-    glBindTexture(GL_TEXTURE_2D, texName[11]);
+    glBindTexture(GL_TEXTURE_2D, texName[8 + virusIndex]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-128.0f, -128.0f, 0);
@@ -423,7 +432,7 @@ void manual(){
 
     glPushMatrix();
     glTranslatef(250, -100, 0);
-    glBindTexture(GL_TEXTURE_2D, texName[12]);
+    glBindTexture(GL_TEXTURE_2D, texName[ 9 + virusIndex]);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-128.0f, -128.0f, 0);
@@ -702,10 +711,14 @@ void checkButtons(){
             actualRoom = 9;
             break;
         case 10:
-            cout << "Go Prev";
+            virusIndex+=3;
+            virusIndex = (virusIndex > 9) ? 9 : virusIndex;
+            cout << "Go Next " << virusIndex << endl;
             break;
         case 11:
-            cout << "Go Next";
+            virusIndex-=3;
+            virusIndex = (virusIndex < 0) ? 0 : virusIndex;
+            cout << "Go Prev " << virusIndex << endl;
             break;
         default:
             break;
