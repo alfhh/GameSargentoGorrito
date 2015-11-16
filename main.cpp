@@ -70,7 +70,8 @@ Object mouse(-2,-2,1,1);
 // Buttons of room 0 = Menu
 Button b(450,460,300,80,"Menu Principal",1);
 Button b2(450, 320, 300, 80, "Opciones", 2);
-Button b3(450, 180, 300, 80, "Cargar", 3);
+Button b3(450, 180, 300, 80, "Laboratorio", 99);
+bool labMenu;
 
 // Buttons of room 1 = Game room
 Button bEsc(450, 420, 300, 80, "Salir del juego", 0);
@@ -223,13 +224,19 @@ void loadImage(string nombreImagen, int numImagen)
 
 void init(void)
 {
+    PlaySound(TEXT("C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\sonido\\background.wav"),
+              NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
     GLUquadricObj *qobj;
     corre=false;
+    labMenu = false;
     glClearColor(0,.47,0,1); // Background color
     arrButtons.push_back(b); // Button added to the array
+    arrButtons.push_back(b2); // Button added to the array
+    arrButtons.push_back(b3); // Button added to the array
     actualRoom = 0; // Default value 0 = mainMenu
 
-    arrButtons.push_back(b);
+    //arrButtons.push_back(b);
     walls.push_back(Object(0, 0,5,800));
     walls.push_back(Object(0, 0,1200,5));
     walls.push_back(Object(0, 795,1200,5));
@@ -505,16 +512,13 @@ void manual(){
 
     bNext.draw();
     bPrev.draw();
-
     // ---------------------------- TEXTURES
 }
 
 // Draw the player
 void drawPlayer(){
     glColor3f(1, 0,0);
-    //materialRuby();
     glRectf(0, 0, 60, 80);
-    //materialOriginal();
 }
 
 // FIRST LEVEL
@@ -705,7 +709,7 @@ void checkButtons(){
                 break;
             } else if (b3.getTarget(mouse) > -1){
                 val = b3.getTarget(mouse);
-                cout << "entro" << endl;
+                cout << "entro" << val << endl;
                 break;
             }
         } else if(actualRoom == 1){
@@ -749,12 +753,14 @@ void checkButtons(){
         case 2:
             cout << "Go to room Opciones" << endl;
             break;
-        case 3:
-            cout << "Go to room Cargar" << endl;
-            break;
         case 9:
             cout << "Go to room Enciclopedia";
             timerRunning = false;
+            actualRoom = 9;
+            break;
+        case 99:
+            labMenu = true;
+            onPause = true;
             actualRoom = 9;
             break;
         case 10:
@@ -854,9 +860,14 @@ void myKeyboard(unsigned char theKey, int x, int y)
     } else if(actualRoom == 9){ // Enciclopedia room
         switch (theKey) {
             case 27:
-                actualRoom = 1;
-                timerRunning = false;
-                onPause = true;
+                if(labMenu){
+                    actualRoom = 0;
+                    onPause = false;
+                } else {
+                    actualRoom = 1;
+                    timerRunning = false;
+                    onPause = true;
+                }
                 break;
             default:
                 break; // do nothing
