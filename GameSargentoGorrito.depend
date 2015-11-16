@@ -97,7 +97,7 @@
 
 1219431990 c:\users\ferra_000\desktop\gamesargentogorrito\imageloader.h
 
-1447616715 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
+1447649910 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -112,6 +112,9 @@
 	<chrono>
 	"Button.h"
 	"Object.h"
+	"imageloader.h"
+	<assert.h>
+	<fstream>
 	"imageloader.h"
 
 1447611647 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp

@@ -70,11 +70,12 @@ Button b3(450, 180, 300, 80, "Cargar", 3);
 
 // Buttons of room 1 = Game room
 Button bEsc(450, 420, 300, 80, "Salir del juego", 0);
-Button bEnc(450, 280, 300, 80, "La Enciclopedia", 9);
+Button bEnc(450, 280, 300, 80, "Laboratorio", 9);
 
 //-----------------------------------Bottones
 
-//Termina Cosas Nuevas
+// - Textures
+static GLuint texName[10];
 
 // Timer
 char tiempo[] = {'0',':','0','0','.','0'};
@@ -133,49 +134,42 @@ void myTimer(int i) {
 }
 
 //Makes the image into a texture, and returns the id of the texture
-GLuint loadTexture(Image* image) {
-	GLuint textureId;
-	glGenTextures(1, &textureId); //Make room for our texture
-	glBindTexture(GL_TEXTURE_2D, textureId); //Tell OpenGL which texture to edit
-	//Map the image to the texture
-	glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
-				 0,                            //0 for now
-				 GL_RGB,                       //Format OpenGL uses for image
-				 image->width, image->height,  //Width and height
-				 0,                            //The border of the image
-				 GL_RGB, //GL_RGB, because pixels are stored in RGB format
-				 GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
-				                   //as unsigned numbers
-				 image->pixels);               //The actual pixel data
-	return textureId; //Returns the id of the texture
-}
+void loadTexture(Image* image,int k)
+{
 
-void materialRuby(){
-    //Asigna los apropiados materiales a las superficies
-    GLfloat mat_ambient[] = {0.25, 0.20725, 0.20725, 1.0f}; //gris
-    GLfloat mat_diffuse[] = {1, 0.829, 0.829, 1.0f};
-    GLfloat mat_specular[] = {0.296648, 0.296648, 0.296648, 1.0f};
-    GLfloat mat_shininess[]= {50.0f};
-   // glEnable(GL)
-    glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
-    glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
-    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-}
+    glBindTexture(GL_TEXTURE_2D, texName[k]); //Tell OpenGL which texture to edit
 
-void materialOriginal(){
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+  //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+  //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
-    //Asigna los apropiados materiales a las superficies
-    GLfloat mat_ambient[] = {0.7f, 0.7f, 0.7f, 1.0f}; //gris
-    GLfloat mat_diffuse[] = {0.6f, 0.6f, 0.6f, 1.0f};
-    GLfloat mat_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat mat_shininess[]= {50.0f};
-    glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
-    glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse);
-    glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-    glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+    //Map the image to the texture
+    glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
+                 0,                            //0 for now
+                 GL_RGB,                       //Format OpenGL uses for image
+                 image->width, image->height,  //Width and height
+                 0,                            //The border of the image
+                 GL_RGB, //GL_RGB, because pixels are stored in RGB format
+                 GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
+                 //as unsigned numbers
+                 image->pixels);               //The actual pixel data
 
 }
+
+void loadImage(string nombreImagen, int numImagen)
+{
+    Image* image;
+    string ruta = "C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\img\\" + nombreImagen;
+    cout<<"Ruta="<<ruta<<endl;
+    image = loadBMP(ruta.c_str());
+    loadTexture(image,numImagen);
+    delete image;
+
+}
+
 
 void init(void)
 {
@@ -187,32 +181,63 @@ void init(void)
     // Player initial values
     playerxcor = 540;
     playerycor = 320;
-
     glEnable(GL_DEPTH);
 
-    ///*
-    //Material stuff
-//glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-    //glShadeModel(GL_SMOOTH);
-    //glEnable(GL_DEPTH_TEST); //para eliminar las caras ocultas
-    //glEnable(GL_NORMALIZE); //normaliza el vector para ombrear apropiadamente
-    // asigna la apropiada fuente de luz
-    //GLfloat lightIntensity[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    //GLfloat light_position[] = {0.0f, 0.0f, 0.0f, 0.0f};
-    //glLightfv(GL_LIGHT0, GL_POSITION,light_position);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE,lightIntensity);
-    //*/
+    //---------------------------------------------- Textures
+    GLuint i=0;
+    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_NORMALIZE);
+    GLfloat ambientLight[] = {2.0f, 2.0f, 2.0f, 2.0f};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+    GLfloat directedLight[] = {0.9f, 0.9f, 0.9f, 1.0f};
+    GLfloat directedLightPos[] = {-10.0f, 15.0f, 20.0f, 0.0f};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, directedLight);
+    glLightfv(GL_LIGHT0, GL_POSITION, directedLightPos);
+//    glEnable(GL_DEPTH_TEST);
+
+    glGenTextures(5, texName); //Make room for our texture
+
+    //Cargar todas las texturas
+    loadImage("camogreen.bmp",i++);
+    loadImage("burried.bmp",i++);
+    loadImage("gamefont.bmp",i++);
+    loadImage("quad.bmp",i++);
+    loadImage("thelab.bmp",i++);
+    loadImage("glass.bmp",i++);
+    //---------------------------------------------- Textures
 }
 
 // MAIN MENU
 void room0() {
-    // TODO REFACTOR THIS
-    // TEXTURE RENDERING
-
 
     glClearColor(0,.47,0,1); // Background color
     glColor3f(1,1,1);
+
+    // ---------------------------- TEXTURES
+    glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texName[0]);
+    glPushMatrix();
+    glTranslatef(600, 400, 0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(600.0f, 600.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-600.0f, 600.0f, 0);
+    glEnd();
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    // ---------------------------- TEXTURES
 
     //--------------- Display mainTitle string
     glPushMatrix();
@@ -227,8 +252,6 @@ void room0() {
     b2.draw(); // Button 2
     b3.draw(); // Button 3
 
-
-
 }
 
 // HEALTH MANUAL
@@ -236,12 +259,54 @@ void manual(){
     glClearColor(.99,.93,.75,1); // Background color
     glColor3f(1,1,1);
 
+    // ---------------------------- TEXTURES
+    glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texName[4]);
     glPushMatrix();
     glTranslatef(600, 400, 0);
-    glutSolidCube(500);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(600.0f, 600.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-600.0f, 600.0f, 0);
+    glEnd();
     glPopMatrix();
 
-    glFlush();
+    glPushMatrix();
+    glTranslatef(600, 400, 0);
+
+
+    // ---------------------------- TEXTURES
+    glBindTexture(GL_TEXTURE_2D, texName[5]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-250.0f, -250.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(250.0f, -250.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(250.0f, 250.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-250.0f, 250.0f, 0);
+    glEnd();
+
+    // ---------------------------- TEXTURES
+
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    // ---------------------------- TEXTURES
 }
 
 // Draw the player
@@ -256,10 +321,54 @@ void drawPlayer(){
 void room1() {
     glClearColor(1,1,1,1); // Background color
     score = 0; // Reset the score of the player
-    //glDisable(GL_LIGHTING);
+
+    // ---------------------------- TEXTURES
+    glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texName[2]);
+    glPushMatrix();
+    glTranslatef(600, 400, -100);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(600.0f, -600.0f, 0);
+
+    glTexCoord2f(1.0f,1.0f);
+    glVertex3f(600.0f, 600.0f, 0);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-600.0f, 600.0f, 0);
+    glEnd();
+    glPopMatrix();
+
+    glBindTexture(GL_TEXTURE_2D, texName[1]);
+    glPushMatrix();
+    glTranslatef(600, 765, 0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-600.0f, -35.0f, 0);
+
+    glTexCoord2f(9.0f, 0.0f);
+    glVertex3f(600.0f, -35.0f, 0);
+
+    glTexCoord2f(9.0f,9.0f);
+    glVertex3f(600.0f, 35.0f, 0);
+
+    glTexCoord2f(0.0f, 9.0f);
+    glVertex3f(-600.0f, 35.0f, 0);
+    glEnd();
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    // ---------------------------- TEXTURES
+
     // Navbar
     glColor3f(0,0,0);
-    glRectf(0, 730, 1200, 800); // Draws the black navbar
+    //glRectf(0, 730, 1200, 800); // Draws the black navbar
     glColor3f(1,0,0); // Color red
     glRasterPos2d(20, 750); // Position of the heart
     glBitmap(32, 32, 0,0, 10, 0, Heart); // Draws the heart
@@ -304,7 +413,30 @@ void room1() {
         glColor3f(.92, .92, .92); // Color gray
         glPushMatrix();
         glTranslatef(600, 400, 0);
-        glutSolidCube(500); // Background of the panel
+
+
+        // ---------------------------- TEXTURES
+        glEnable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texName[3]);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-250.0f, -250.0f, 0);
+
+        glTexCoord2f(5.0f, 0.0f);
+        glVertex3f(250.0f, -250.0f, 0);
+
+        glTexCoord2f(5.0f,5.0f);
+        glVertex3f(250.0f, 250.0f, 0);
+
+        glTexCoord2f(0.0f, 5.0f);
+        glVertex3f(-250.0f, 250.0f, 0);
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_LIGHTING);
+        // ---------------------------- TEXTURES
+
 
         glPushMatrix(); // Pause label
         glTranslatef(-90, 180, 0);
@@ -322,7 +454,7 @@ void room1() {
 void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glLineWidth(1.0);
+    //glLineWidth(1.0);
 
     switch (actualRoom) {
         case 0: // Paints the main menu
@@ -517,3 +649,212 @@ int main(int argc, char *argv[])
     glutPostRedisplay();
     return EXIT_SUCCESS;
 }
+
+//-------------------------------------------- IMAGE LOADER
+
+#include <assert.h>
+#include <fstream>
+
+#include "imageloader.h"
+
+using namespace std;
+
+Image::Image(char* ps, int w, int h) : pixels(ps), width(w), height(h)
+{
+
+}
+
+Image::~Image()
+{
+    delete[] pixels;
+}
+
+namespace
+{
+    //Converts a four-character array to an integer, using little-endian form
+    int toInt(const char* bytes)
+    {
+        return (int)(((unsigned char)bytes[3] << 24) |
+                     ((unsigned char)bytes[2] << 16) |
+                     ((unsigned char)bytes[1] << 8) |
+                     (unsigned char)bytes[0]);
+    }
+
+    //Converts a two-character array to a short, using little-endian form
+    short toShort(const char* bytes)
+    {
+        return (short)(((unsigned char)bytes[1] << 8) |
+                       (unsigned char)bytes[0]);
+    }
+
+    //Reads the next four bytes as an integer, using little-endian form
+    int readInt(ifstream &input)
+    {
+        char buffer[4];
+        input.read(buffer, 4);
+        return toInt(buffer);
+    }
+
+    //Reads the next two bytes as a short, using little-endian form
+    short readShort(ifstream &input)
+    {
+        char buffer[2];
+        input.read(buffer, 2);
+        return toShort(buffer);
+    }
+
+    //Just like auto_ptr, but for arrays
+    template<class T>
+    class auto_array
+    {
+    private:
+        T* array;
+        mutable bool isReleased;
+    public:
+        explicit auto_array(T* array_ = NULL) :
+        array(array_), isReleased(false)
+        {
+        }
+
+        auto_array(const auto_array<T> &aarray)
+        {
+            array = aarray.array;
+            isReleased = aarray.isReleased;
+            aarray.isReleased = true;
+        }
+
+        ~auto_array()
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+        }
+
+        T* get() const
+        {
+            return array;
+        }
+
+        T &operator*() const
+        {
+            return *array;
+        }
+
+        void operator=(const auto_array<T> &aarray)
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+            array = aarray.array;
+            isReleased = aarray.isReleased;
+            aarray.isReleased = true;
+        }
+
+        T* operator->() const
+        {
+            return array;
+        }
+
+        T* release()
+        {
+            isReleased = true;
+            return array;
+        }
+
+        void reset(T* array_ = NULL)
+        {
+            if (!isReleased && array != NULL)
+            {
+                delete[] array;
+            }
+            array = array_;
+        }
+
+        T* operator+(int i)
+        {
+            return array + i;
+        }
+
+        T &operator[](int i)
+        {
+            return array[i];
+        }
+    };
+}
+
+Image* loadBMP(const char* filename)
+{
+    ifstream input;
+    input.open(filename, ifstream::binary);
+    assert(!input.fail() || !"Could not find file");
+    char buffer[2];
+    input.read(buffer, 2);
+    assert(buffer[0] == 'B' && buffer[1] == 'M' || !"Not a bitmap file");
+    input.ignore(8);
+    int dataOffset = readInt(input);
+
+    //Read the header
+    int headerSize = readInt(input);
+    int width;
+    int height;
+    switch (headerSize)
+    {
+        case 40:
+            //V3
+            width = readInt(input);
+            height = readInt(input);
+            input.ignore(2);
+            assert(readShort(input) == 24 || !"Image is not 24 bits per pixel");
+            assert(readShort(input) == 0 || !"Image is compressed");
+            break;
+        case 12:
+            //OS/2 V1
+            width = readShort(input);
+            height = readShort(input);
+            input.ignore(2);
+            assert(readShort(input) == 24 || !"Image is not 24 bits per pixel");
+            break;
+        case 64:
+            //OS/2 V2
+            assert(!"Can't load OS/2 V2 bitmaps");
+            break;
+        case 108:
+            //Windows V4
+            assert(!"Can't load Windows V4 bitmaps");
+            break;
+        case 124:
+            //Windows V5
+            assert(!"Can't load Windows V5 bitmaps");
+            break;
+        default:
+            assert(!"Unknown bitmap format");
+    }
+
+    //Read the data
+    int bytesPerRow = ((width * 3 + 3) / 4) * 4 - (width * 3 % 4);
+    int size = bytesPerRow * height;
+    auto_array<char> pixels(new char[size]);
+    input.seekg(dataOffset, ios_base::beg);
+    input.read(pixels.get(), size);
+
+    //Get the data into the right format
+    auto_array<char> pixels2(new char[width * height * 3]);
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                pixels2[3 * (width * y + x) + c] =
+                pixels[bytesPerRow * y + 3 * x + (2 - c)];
+            }
+        }
+    }
+
+    input.close();
+    return new Image(pixels2.release(), width, height);
+}
+
+//-------------------------------------------- IMAGE LOADER
