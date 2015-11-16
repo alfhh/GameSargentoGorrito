@@ -97,7 +97,7 @@
 
 1219431990 c:\users\ferra_000\desktop\gamesargentogorrito\imageloader.h
 
-1447649910 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
+1447656442 source:c:\users\ferra_000\desktop\gamesargentogorrito\main.cpp
 	<GLUT/glut.h>
 	<windows.h>
 	<GL/glut.h>
@@ -110,13 +110,77 @@
 	<cmath>
 	<random>
 	<chrono>
+	<vector>
 	"Button.h"
 	"Object.h"
+	"Sargent.h"
+	"Bullet.h"
 	"imageloader.h"
 	<assert.h>
 	<fstream>
 	"imageloader.h"
 
-1447611647 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp
+1447654791 source:c:\users\ferra_000\desktop\gamesargentogorrito\object.cpp
 	"Object.h"
+
+1447650562 source:c:\users\ferra_000\desktop\gamesargentogorrito\bullet.cpp
+	"Bullet.h"
+
+1447648650 c:\users\ferra_000\desktop\gamesargentogorrito\bullet.h
+	<stdio.h>
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	"Object.h"
+	"Character.h"
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1447614484 c:\users\ferra_000\desktop\gamesargentogorrito\character.h
+	<stdio.h>
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	"Object.h"
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1447650896 source:c:\users\ferra_000\desktop\gamesargentogorrito\character.cpp
+	"Character.h"
+
+1447642810 c:\users\ferra_000\desktop\gamesargentogorrito\sargent.h
+	<stdio.h>
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	"Object.h"
+	"Character.h"
+	<sstream>
+	<stdlib.h>
+	<math.h>
+	<string>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<random>
+	<chrono>
+
+1447656629 source:c:\users\ferra_000\desktop\gamesargentogorrito\sargent.cpp
+	"Sargent.h"
+	"Math.h"
+	"cmath"
 

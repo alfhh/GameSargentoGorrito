@@ -19,9 +19,11 @@
 #include <cmath>
 #include <random>
 #include <chrono>
-
+#include <vector>
 #include "Button.h"
 #include "Object.h"
+#include "Sargent.h"
+#include "Bullet.h"
 #include "imageloader.h" // Used to load textures
 using namespace std;
 
@@ -61,6 +63,8 @@ GLubyte Heart[] = {0x00,0x00,0x00,0x00,
 
 //-----------------------------------Bottones
 vector <Button> arrButtons;
+vector <Bullet> arrBullets;
+vector <Object> walls;
 Object mouse(-2,-2,1,1);
 
 // Buttons of room 0 = Menu
@@ -74,6 +78,16 @@ Button bEnc(450, 280, 300, 80, "Laboratorio", 9);
 
 //-----------------------------------Bottones
 
+// -------------------------------------- FRANKS
+Sargent s(450,400,50,50,0,0,0,0,0);
+Bullet bu(450,400,20,20,0,0);
+int pointsPlayer=0;
+
+int rotacionCartas = 0; //TODO change this
+int rotacionTotal = 0;
+
+// -------------------------------------- FRANKS
+int shoot=0;
 // - Textures
 static GLuint texName[10];
 
@@ -107,11 +121,8 @@ bool onPause = false; // If true paints pause screen
 
 // Previous stuff
 bool corre=false;
-int pointsPlayer=0;
 int sP = 0; // Score del player
 int sD = 0; // Score del dealer
-int rotacionCartas = 0;
-int rotacionTotal = 0;
 int angulo = 0;
 bool girando = false;
 
@@ -127,7 +138,40 @@ void myTimer(int i) {
         sec+=1;
     }
 
-    glutTimerFunc(100,myTimer,i);
+    if (shoot>0){
+        shoot++;
+        if (shoot>10)
+            shoot=0;
+    }
+    if(girando && angulo <= 360){
+        angulo = rotacionCartas;
+    } else {
+        angulo = 0;
+        girando = false;
+    }
+
+    if (rotacionTotal>0){
+       rotacionCartas+=10;
+        rotacionTotal-=10;
+    }
+    else{
+        rotacionCartas=0;
+    }
+
+    for (int i = 0 ; i < arrBullets.size();i++){
+        for(int j = 0 ; j < walls.size();j++){
+            if (walls[j].checkColision(arrBullets[i])){
+                arrBullets.erase(arrBullets.begin()+i);
+                break;
+            }
+        }
+    }
+
+    for (int i = 0 ; i < arrBullets.size();i++){
+        arrBullets[i].move();
+    }
+
+    glutTimerFunc(10,myTimer,i);
     formato(sec);
     glutPostRedisplay();
 
@@ -178,9 +222,17 @@ void init(void)
     arrButtons.push_back(b); // Button added to the array
     actualRoom = 0; // Default value 0 = mainMenu
 
+    arrButtons.push_back(b);
+    walls.push_back(Object(0, 0,5,800));
+    walls.push_back(Object(0, 0,1200,5));
+    walls.push_back(Object(0, 795,1200,5));
+    walls.push_back(Object(1195, 0,5,800));
+
     // Player initial values
-    playerxcor = 540;
-    playerycor = 320;
+    //playerxcor = 540;
+    //playerycor = 320;
+
+
     glEnable(GL_DEPTH);
 
     //---------------------------------------------- Textures
@@ -402,10 +454,10 @@ void room1() {
     glPopMatrix(); // -------------------------------------------------------- NAVBAR
 
     // ----------------------------- Player
-    glPushMatrix();
-    glTranslatef(playerxcor, playerycor, 0);
-    drawPlayer();
-    glPopMatrix();
+    s.draw(mouse.getPosX(), mouse.getPosY());
+    for (Bullet aux:arrBullets){
+        aux.draw();
+    }
     //------------------------------ Player
 
     if(onPause) { // Display the pause window
@@ -570,8 +622,22 @@ void myMouse(int button, int state, int x, int y)
             mouse.setPosY(y);
             cout << "The position of the mouse X: " << mouse.getPosX() <<" and Y: " << mouse.getPosY() << endl;
             //cout << "The position of the button X: " << arrButtons[0].getPosX() <<" and Y: " << arrButtons[0].getPosY() << endl;
+            if (actualRoom==1&&!onPause){
+                if (shoot==0){
+                    shoot=1;
+                    arrBullets.push_back(Bullet(s.getPosX()+s.getWidth()*.25, s.getPosY()+s.getHeight()*.25,20,20,s.getAimX(),s.getAimY()));
+                }
+            }
             checkButtons();
         }
+}
+
+void myMousePassive(int x, int y){
+    y = (y * 800) / glutGet(GLUT_WINDOW_HEIGHT);
+    y = 800 - y;
+    x = (x * 1200) / glutGet(GLUT_WINDOW_WIDTH);
+    mouse.setPosX(x);
+    mouse.setPosY(y);
 }
 
 void myKeyboard(unsigned char theKey, int x, int y)
@@ -641,9 +707,10 @@ int main(int argc, char *argv[])
     glutCreateWindow("Sargento Gorrito: El juego");
     init(); // Initialize all the game variables
     glutDisplayFunc(display);
-    glutTimerFunc(0, myTimer, 0);
+    glutTimerFunc(5, myTimer, 0);
     glutReshapeFunc(reshape);
     glutMouseFunc(myMouse);
+    glutPassiveMotionFunc(myMousePassive);
     glutKeyboardFunc(myKeyboard);
     glutMainLoop();
     glutPostRedisplay();
