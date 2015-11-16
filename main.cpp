@@ -22,8 +22,10 @@
 #include <vector>
 #include "Button.h"
 #include "Object.h"
-#include "Sargent.h"
+
 #include "Bullet.h"
+#include "Sperm.h"
+#include "Sargent.h"
 #include "imageloader.h" // Used to load textures
 using namespace std;
 
@@ -65,8 +67,9 @@ GLubyte Heart[] = {0x00,0x00,0x00,0x00,
 vector <Button> arrButtons;
 vector <Bullet> arrBullets;
 vector <Object> walls;
+vector <Sperm> arrSperm;
+Sperm sp(800,800);
 Object mouse(-2,-2,1,1);
-
 // Buttons of room 0 = Menu
 Button b(450,460,300,80,"Menu Principal",1);
 Button b2(450, 320, 300, 80, "Opciones", 2);
@@ -85,7 +88,7 @@ int virusIndex = 0;
 //-----------------------------------Bottones
 
 // -------------------------------------- FRANKS
-Sargent s(450,400,50,50,0,0,0,0,0);
+Sargent s(450,400,50,50,100,0,0,0,0);
 Bullet bu(450,400,20,20,0,0);
 int pointsPlayer=0;
 
@@ -112,7 +115,7 @@ string labelPause = "En pausa";
 
 // Textures
 GLuint _textureId; //The id of the texture
-
+int entradaY;
 // Player
 int playerxcor;
 int playerycor;
@@ -141,10 +144,22 @@ void formato(int i){
     tiempo[3]=((sec%100)/10)+'0';
     tiempo[5]=(sec%10)+'0';
 }
-
+int minSec=0;
+int minsec2=0;
+int secE=0;
 void myTimer(int i) {
     if (timerRunning){
-        sec+=1;
+        minSec+=1;
+        minsec2++;
+        if (minSec==10){
+            sec+=1;
+            
+            minSec=0;
+        }
+        if(minsec2==100){
+            minsec2=0;
+        }
+        
     }
 
     if(actualRoom == 9){
@@ -173,11 +188,61 @@ void myTimer(int i) {
             }
         }
     }
-
+    for (int i = 0 ; i < arrBullets.size();i++){
+        for(int j = 0 ; j < arrSperm.size();j++){
+            if (arrSperm[j].checkColision(arrBullets[i])){
+                arrBullets.erase(arrBullets.begin()+i);
+                arrSperm[j].changeHealth(-arrBullets[i].getDamage());
+                if (arrSperm[j].getHealth()<=0){
+                    arrSperm.erase(arrSperm.begin()+j);
+                }
+            }
+        }
+    }
+    for (int i = 0 ; i < arrSperm.size();i++){
+        if (arrSperm[i].getPosX()+arrSperm[i].getWidth()>1200){
+            arrSperm[i].setSpeedX(-2);
+        }
+        if (arrSperm[i].getPosX()<0){
+            arrSperm[i].setSpeedX(2);
+        }
+        if (arrSperm[i].getPosY()+arrSperm[i].getHeight()>725){
+            arrSperm[i].setSpeedY(-2);
+        }
+        if (arrSperm[i].getPosY()<0){
+            arrSperm[i].setSpeedY(2);
+        }
+    }
+    for (int i = 0 ; i < arrSperm.size();i++){
+        if (s.checkColision(arrSperm[i])){
+            s.changeHealth(-arrSperm[i].getDamage());
+            arrSperm.erase(arrSperm.begin()+i);
+        }
+    }
     for (int i = 0 ; i < arrBullets.size();i++){
         arrBullets[i].move();
     }
-
+    for (int i = 0 ; i < arrSperm.size();i++){
+        arrSperm[i].move();
+    }
+    s.move();
+    if(s.getPosX()<2||s.getPosX()+s.getWidth()>1200){
+        s.setSpeedX(0);
+    }
+    if(s.getPosY()<2||s.getPosY()+s.getHeight()>725){
+        s.setSpeedY(0);
+    }
+    if (minsec2==99){
+        minsec2=0;
+        entradaY = rand() % 725;
+        if (rand()%2== 0){
+            arrSperm.push_back(Sperm (-40,entradaY));
+        }
+        else{
+            arrSperm.push_back(Sperm (1200,entradaY));
+        }
+        cout << arrSperm.size()<<endl;
+    }
     glutTimerFunc(10,myTimer,i);
     formato(sec);
     glutPostRedisplay();
@@ -213,7 +278,8 @@ void loadTexture(Image* image,int k)
 void loadImage(string nombreImagen, int numImagen)
 {
     Image* image;
-    string ruta = "C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\img\\" + nombreImagen;
+    //string ruta = "C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\img\\" + nombreImagen;
+    string ruta = "/Users/frankcanseco/Documents/Github/GMG/GMG/GameSargentoGorrito/img/" + nombreImagen;
     cout<<"Ruta="<<ruta<<endl;
     image = loadBMP(ruta.c_str());
     loadTexture(image,numImagen);
@@ -224,8 +290,8 @@ void loadImage(string nombreImagen, int numImagen)
 
 void init(void)
 {
-    PlaySound(TEXT("C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\sonido\\background.wav"),
-              NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    //PlaySound(TEXT("C:\\Users\\ferra_000\\Desktop\\GameSargentoGorrito\\sonido\\background.wav"),
+              //NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     GLUquadricObj *qobj;
     corre=false;
@@ -239,9 +305,9 @@ void init(void)
     //arrButtons.push_back(b);
     walls.push_back(Object(0, 0,5,800));
     walls.push_back(Object(0, 0,1200,5));
-    walls.push_back(Object(0, 795,1200,5));
+    walls.push_back(Object(0, 725,1200,5));
     walls.push_back(Object(1195, 0,5,800));
-
+    arrSperm.push_back(sp);
     // Player initial values
     //playerxcor = 540;
     //playerycor = 320;
@@ -610,6 +676,9 @@ void room1() {
     for (Bullet aux:arrBullets){
         aux.draw();
     }
+    for (int i = 0 ; i < arrSperm.size() ;i++){
+        arrSperm[i].draw();
+    }
     //------------------------------ Player
 
     if(onPause) { // Display the pause window
@@ -617,7 +686,6 @@ void room1() {
         glColor3f(.92, .92, .92); // Color gray
         glPushMatrix();
         glTranslatef(600, 400, 0);
-
 
         // ---------------------------- TEXTURES
         glEnable(GL_LIGHTING);
@@ -656,7 +724,6 @@ void room1() {
 }
 
 void display(){
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     //glLineWidth(1.0);
 
@@ -673,7 +740,6 @@ void display(){
         default:
             break;
     }
-
     glutSwapBuffers();
 }
 
@@ -778,6 +844,7 @@ void checkButtons(){
     }
 }
 
+
 void myMouse(int button, int state, int x, int y)
 {
     // Fix of y
@@ -804,7 +871,6 @@ void myMouse(int button, int state, int x, int y)
             checkButtons();
         }
 }
-
 void myMousePassive(int x, int y){
     y = (y * 800) / glutGet(GLUT_WINDOW_HEIGHT);
     y = 800 - y;
@@ -812,6 +878,7 @@ void myMousePassive(int x, int y){
     mouse.setPosX(x);
     mouse.setPosY(y);
 }
+
 
 void myKeyboard(unsigned char theKey, int x, int y)
 {
@@ -828,26 +895,38 @@ void myKeyboard(unsigned char theKey, int x, int y)
         switch (theKey) {
             case 'w':
             case 'W': // Movement upward
-                if(playerycor < 650){
-                    playerycor+= playerSpeed;
+                if(s.getPosY() + s.getHeight() < 725){
+                    s.setSpeedY(5);
+                }
+                else{
+                    s.setSpeedY(0);
                 }
                 break;
             case 's':
             case 'S': // Movement downward
-                if(playerycor > 0){
-                    playerycor-= playerSpeed;
+                if(s.getPosY() > 0){
+                    s.setSpeedY(-5);
+                }
+                else{
+                    s.setSpeedY(0);
                 }
                 break;
             case 'a':
             case 'A': // Go left
-                if(playerxcor > 0){
-                    playerxcor-= playerSpeed;
+                if(s.getPosX() > 0){
+                    s.setSpeedX(-5);
+                }
+                else{
+                    s.setSpeedX(0);
                 }
                 break;
             case 'd':
             case 'D': // Go right
-                if(playerxcor < 1140){
-                    playerxcor+= playerSpeed;
+                if(s.getPosX() + s.getWidth() < 1200){
+                    s.setSpeedX(5);
+                }
+                else{
+                    s.setSpeedX(0);
                 }
                 break;
             case 27: // Pause game
@@ -875,6 +954,51 @@ void myKeyboard(unsigned char theKey, int x, int y)
     }
 }
 
+void myKeyboardUp(unsigned char theKey, int x, int y)
+{
+    if(actualRoom == 1){ // Game room
+        switch (theKey) {
+            case 'w':
+            case 'W': // Movement upward
+                if(s.getPosY() + s.getHeight() < 725){
+                    s.setSpeedY(0);
+                }
+                else{
+                    s.setSpeedY(0);
+                }
+                break;
+            case 's':
+            case 'S': // Movement downward
+                if(s.getPosY() > 0){
+                    s.setSpeedY(0);
+                }
+                else{
+                    s.setSpeedY(0);
+                }
+                break;
+            case 'a':
+            case 'A': // Go left
+                if(s.getPosX() > 0){
+                    s.setSpeedX(0);
+                }
+                else{
+                    s.setSpeedX(0);
+                }
+                break;
+            case 'd':
+            case 'D': // Go right
+                if(s.getPosX() + s.getWidth() < 1200){
+                    s.setSpeedX(0);
+                }
+                else{
+                    s.setSpeedX(0);
+                }
+                break;
+                break; // do nothing
+        }
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -890,6 +1014,7 @@ int main(int argc, char *argv[])
     glutMouseFunc(myMouse);
     glutPassiveMotionFunc(myMousePassive);
     glutKeyboardFunc(myKeyboard);
+    glutKeyboardUpFunc(myKeyboardUp);
     glutMainLoop();
     glutPostRedisplay();
     return EXIT_SUCCESS;
