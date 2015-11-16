@@ -120,6 +120,9 @@ int playerSpeed = 10;
 // Rooms
 int actualRoom;
 
+// Virus
+GLuint startList;
+
 // Flags
 bool timerRunning = false;
 bool onPause = false; // If true paints pause screen
@@ -143,16 +146,14 @@ void myTimer(int i) {
         sec+=1;
     }
 
+    if(actualRoom == 9){
+        angulo = angulo % 360 + 1;
+    }
+
     if (shoot>0){
         shoot++;
         if (shoot>10)
             shoot=0;
-    }
-    if(girando && angulo <= 360){
-        angulo = rotacionCartas;
-    } else {
-        angulo = 0;
-        girando = false;
     }
 
     if (rotacionTotal>0){
@@ -222,6 +223,7 @@ void loadImage(string nombreImagen, int numImagen)
 
 void init(void)
 {
+    GLUquadricObj *qobj;
     corre=false;
     glClearColor(0,.47,0,1); // Background color
     arrButtons.push_back(b); // Button added to the array
@@ -280,6 +282,44 @@ void init(void)
     loadImage("her3.bmp",i++); // 18
 
     //---------------------------------------------- Textures
+    //---------------------------------------------- Quads
+
+    startList = glGenLists(4);
+    qobj = gluNewQuadric();
+
+
+    // gluQuadricDrawStyle(qobj, GLU_FILL); /* smooth shaded */
+    gluQuadricDrawStyle(qobj, GLU_POINT); // son puntos
+    gluQuadricNormals(qobj, GLU_SMOOTH); // sombreado suave
+    glNewList(startList, GL_COMPILE); // precompilar
+    gluSphere(qobj, .9, 25, 20);
+    glEndList();
+
+    gluQuadricDrawStyle(qobj, GLU_POINT); /* flat shaded */
+    gluQuadricNormals(qobj, GLU_FLAT);
+    glNewList(startList+3, GL_COMPILE);
+    gluCylinder(qobj, 1.0, 0.0, 1.0, 15, 5);
+    glEndList();
+
+    gluQuadricDrawStyle(qobj, GLU_SILHOUETTE); /* all polygons wireframe */
+    gluQuadricNormals(qobj, GLU_NONE);
+    glNewList(startList+6, GL_COMPILE);
+    gluDisk(qobj, 0.5, 1.0, 30, 1);
+    glEndList();
+
+    gluQuadricDrawStyle(qobj, GLU_SILHOUETTE); /* boundary only  */
+    gluQuadricNormals(qobj, GLU_NONE);
+    glNewList(startList+9, GL_COMPILE);
+    gluPartialDisk(qobj, 0.0, 0.5, 20, 4, 0.0, 275.0);
+    glEndList();
+
+    gluQuadricDrawStyle(qobj, GLU_LINE); // son puntos
+    gluQuadricNormals(qobj, GLU_SMOOTH); // sombreado suave
+    glNewList(startList+2, GL_COMPILE); // precompilar
+    gluSphere(qobj, 0.37, 25, 20);
+    glEndList();
+
+    //---------------------------------------------- Quads
 }
 
 // MAIN MENU
@@ -383,10 +423,17 @@ void manual(){
     glTranslatef(-120, 0, 0);
 
     glColor3f(1,1,1);
+    glPointSize(5);
 
     glPushMatrix(); // -------------- DISPLAY IMAGE
+    glRotated(angulo, 0, 1, 0);
     glTranslatef(0,150,0);
-    glutSolidCube(180);
+    glScalef(100,100,100);
+    glColor3f(1.0, 0.0, 0.0);
+    glCallList(startList + virusIndex); // <- Esfera 1
+    glColor3f(1,1,1);
+    if(virusIndex == 0)
+        glCallList(startList+2); // <- Esfera 2
     glPopMatrix();
 
     // ------------------------ INFO
